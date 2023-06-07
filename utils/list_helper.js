@@ -1,10 +1,20 @@
+const blog = require('../models/blog')
+
 const totalLikes = (blogs) => {
-    const initialValue = 0
-    const sumOfLikes = blogs.reduce(
-        (sum, blog) => sum + blog.likes,
-        initialValue
-    )
-    return sumOfLikes
+    return blogs.reduce((sum, blog) => sum + blog.likes, 0)
 }
 
-module.exports = { totalLikes }
+const favoriteBlog = (blogs) => {
+    return blogs.reduce(
+        (currentFavorite, blog) => {
+            const favorite = blog.likes > currentFavorite.likes ? blog : currentFavorite
+            return {
+                title: favorite.title,
+                author: favorite.author,
+                likes: favorite.likes
+            }
+        }, blogs[0]
+    )
+}
+
+module.exports = { totalLikes, favoriteBlog }

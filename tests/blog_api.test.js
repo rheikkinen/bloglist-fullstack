@@ -39,4 +39,13 @@ test('a valid blog can be added', async () => {
     expect(allBlogs).toHaveLength(helper.initialBlogs.length + 1)
 })
 
+test('a new blog has zero likes by default', async () => {
+    const response = await api
+        .post('/api/blogs')
+        .send(helper.newBlog)
+
+    const addedBlog = response.body
+    expect(addedBlog.likes).toEqual(0)
+})
+
 afterAll(async () => await mongoose.connection.close())

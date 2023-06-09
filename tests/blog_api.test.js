@@ -28,4 +28,15 @@ test('returned blogs have a property named id', async () => {
     blogs.forEach(blog => expect(blog.id).toBeDefined())
 })
 
+test('a valid blog can be added', async () => {
+    await api
+        .post('/api/blogs')
+        .send(helper.newBlog)
+        .expect(201)
+        .expect('Content-Type', /application\/json/)
+
+    const allBlogs = await helper.blogsInDatabase()
+    expect(allBlogs).toHaveLength(helper.initialBlogs.length + 1)
+})
+
 afterAll(async () => await mongoose.connection.close())

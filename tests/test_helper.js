@@ -1,3 +1,5 @@
+const Blog = require('../models/blog')
+
 const listWithOneBlog = [
     {
         _id: '5a422b891b54a676234d17fa',
@@ -75,6 +77,21 @@ const initialBlogs = [
     },
 ]
 
+const newBlog = {
+    title: 'React patterns',
+    author: 'Michael Chan',
+    url: 'https://reactpatterns.com/',
+}
+
+const blogsInDatabase = async () => {
+    const blogs = await Blog.find({})
+    return blogs.map(blog => blog.toJSON())
+}
+
 module.exports = {
-    listWithOneBlog, listWithManyBlogs, initialBlogs
+    listWithOneBlog,
+    listWithManyBlogs,
+    initialBlogs,
+    newBlog,
+    blogsInDatabase
 }

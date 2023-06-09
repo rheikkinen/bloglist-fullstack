@@ -17,9 +17,15 @@ test('blogs are returned as json', async () => {
         .expect('Content-Type', /application\/json/)
 })
 
-test('correct number of blogs is returned', async () => {
+test('all blogs are returned', async () => {
     const response = await api.get('/api/blogs')
     expect(response.body).toHaveLength(helper.initialBlogs.length)
+})
+
+test('returned blogs have a property named id', async () => {
+    const response = await api.get('/api/blogs')
+    const blogs = response.body
+    blogs.forEach(blog => expect(blog.id).toBeDefined())
 })
 
 afterAll(async () => await mongoose.connection.close())

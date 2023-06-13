@@ -73,7 +73,7 @@ describe('adding a new blog', () => {
 })
 
 describe('deleting a blog', () => {
-    test('succeeds if the id is existing', async () => {
+    test('succeeds if the id is valid', async () => {
         const blogsBeforeDeletion = await helper.blogsInDatabase()
         const blogToBeDeleted = blogsBeforeDeletion[0]
         expect(blogsBeforeDeletion).toContain(blogToBeDeleted)
@@ -85,6 +85,33 @@ describe('deleting a blog', () => {
         const blogsAFterDeletion = await helper.blogsInDatabase()
         expect(blogsAFterDeletion).toHaveLength(blogsBeforeDeletion.length - 1)
         expect(blogsAFterDeletion).not.toContain(blogToBeDeleted)
+    })
+})
+
+describe('updating blog details', () => {
+    test('succeeds if the id is valid', async () => {
+        const blogsBeforeUpdate = await helper.blogsInDatabase()
+        const blogToBeUpdated = blogsBeforeUpdate[0]
+
+        const newData = {
+            title: 'new title',
+            url: 'new url',
+            likes: 99
+        }
+
+        await api
+            .put(`/api/blogs/${blogToBeUpdated.id}`)
+            .send(newData)
+            .expect(200)
+
+        const updatedBlog = await helper.findBlogById(blogToBeUpdated.id)
+        expect(updatedBlog.title).toBe(newData.title)
+        expect(updatedBlog.url).toBe(newData.url)
+        expect(updatedBlog.likes).toBe(newData.likes)
+        expect(updatedBlog.author).toBe(blogToBeUpdated.author) // not updated
+
+        const blogsAfterUpdate = await helper.blogsInDatabase()
+        expect(blogsAfterUpdate).toHaveLength(blogsBeforeUpdate.length)
     })
 })
 

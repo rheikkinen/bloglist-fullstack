@@ -98,6 +98,11 @@ const blogsInDatabase = async () => {
     return blogs.map(blog => blog.toJSON())
 }
 
+const findBlogById = async (blogId) => {
+    const blog = await Blog.findById(blogId)
+    return blog.toJSON()
+}
+
 module.exports = {
     listWithOneBlog,
     listWithManyBlogs,
@@ -105,5 +110,6 @@ module.exports = {
     newBlog,
     blogWithoutUrl,
     blogWithoutTitle,
-    blogsInDatabase
+    blogsInDatabase,
+    findBlogById
 }

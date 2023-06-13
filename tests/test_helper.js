@@ -5,7 +5,7 @@ const listWithOneBlog = [
         _id: '5a422b891b54a676234d17fa',
         title: 'First class tests',
         author: 'Robert C. Martin',
-        url: 'http://blog.cleancoder.com/uncle-bob/2017/05/05/TestDefinitions.htmll',
+        url: 'http://blog.cleancoder.com/uncle-bob/2017/05/05/TestDefinitions.html',
         likes: 10,
         __v: 0
     },
@@ -72,7 +72,7 @@ const initialBlogs = [
     {
         title: 'First class tests',
         author: 'Robert C. Martin',
-        url: 'http://blog.cleancoder.com/uncle-bob/2017/05/05/TestDefinitions.htmll',
+        url: 'http://blog.cleancoder.com/uncle-bob/2017/05/05/TestDefinitions.html',
         likes: 10,
     },
 ]
@@ -81,6 +81,16 @@ const newBlog = {
     title: 'React patterns',
     author: 'Michael Chan',
     url: 'https://reactpatterns.com/',
+}
+
+const blogWithoutUrl = {
+    title: 'On the foolishness of “natural language programming”',
+    author: 'Edsger W. Dijkstra'
+}
+
+const blogWithoutTitle = {
+    author: 'Robert C. Martin',
+    url: 'http://blog.cleancoder.com/uncle-bob/2016/05/01/TypeWars.html'
 }
 
 const blogsInDatabase = async () => {
@@ -93,5 +103,7 @@ module.exports = {
     listWithManyBlogs,
     initialBlogs,
     newBlog,
+    blogWithoutUrl,
+    blogWithoutTitle,
     blogsInDatabase
 }

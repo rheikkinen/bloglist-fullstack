@@ -48,4 +48,24 @@ test('a new blog has zero likes by default', async () => {
     expect(addedBlog.likes).toEqual(0)
 })
 
+test('a blog without URL cannot be added', async () => {
+    await api
+        .post('/api/blogs')
+        .send(helper.blogWithoutUrl)
+        .expect(400)
+
+    const allBlogs = await helper.blogsInDatabase()
+    expect(allBlogs).toHaveLength(helper.initialBlogs.length)
+})
+
+test('a blog without title cannot be added', async () => {
+    await api
+        .post('/api/blogs')
+        .send(helper.blogWithoutTitle)
+        .expect(400)
+
+    const allBlogs = await helper.blogsInDatabase()
+    expect(allBlogs).toHaveLength(helper.initialBlogs.length)
+})
+
 afterAll(async () => await mongoose.connection.close())

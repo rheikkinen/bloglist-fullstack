@@ -23,6 +23,8 @@ const userExtractor = async (request, response, next) => {
         }
         const user = await User.findById(decodedToken.id)
         request.user = user
+    } else if (request.method === 'POST') {
+        return response.status(401).json({ error: 'Missing token' })
     } else {
         request.user = null
     }

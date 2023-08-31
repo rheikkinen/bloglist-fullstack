@@ -78,6 +78,12 @@ const initialBlogs = [
     },
 ]
 
+const initialUser = {
+    username: 'testuser',
+    name: 'Initial User',
+    password: 'testpassword'
+}
+
 const newBlog = {
     title: 'React patterns',
     author: 'Michael Chan',
@@ -114,6 +120,7 @@ module.exports = {
     listWithManyBlogs,
     initialBlogs,
     newBlog,
+    initialUser,
     blogWithoutUrl,
     blogWithoutTitle,
     blogsInDatabase,

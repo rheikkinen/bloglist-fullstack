@@ -4,6 +4,26 @@ const app = require('../app')
 const api = supertest(app)
 const Blog = require('../models/blog')
 const helper = require('./test_helper')
+const User = require('../models/user')
+
+let token
+
+beforeAll(async () => {
+    await User.deleteMany({})
+
+    await api
+        .post('/api/users')
+        .send(helper.initialUser)
+
+    const response = await api
+        .post('/api/login')
+        .send({
+            username: helper.initialUser.username,
+            password: helper.initialUser.password
+        })
+
+    token = response.body.token
+})
 
 beforeEach(async () => {
     await Blog.deleteMany({})
@@ -31,10 +51,10 @@ describe('when blogs are returned from the database', () => {
 })
 
 describe('adding a new blog', () => {
-    // Test fails due to token authentication missing
-    test.failing('succeeds with valid details', async () => {
+    test('succeeds with valid details', async () => {
         await api
             .post('/api/blogs')
+            .set('Authorization', `bearer ${token}`)
             .send(helper.newBlog)
             .expect(201)
             .expect('Content-Type', /application\/json/)
@@ -43,19 +63,31 @@ describe('adding a new blog', () => {
         expect(allBlogs).toHaveLength(helper.initialBlogs.length + 1)
     })
 
-    // Test fails due to token authentication missing
-    test.failing('added blog has zero likes by default', async () => {
+    test('added blog has zero likes by default', async () => {
         const response = await api
             .post('/api/blogs')
+            .set('Authorization', `bearer ${token}`)
             .send(helper.newBlog)
 
         const addedBlog = response.body
         expect(addedBlog.likes).toEqual(0)
     })
 
+    test('fails if request does not include token', async () => {
+        await api
+            .post('/api/blogs')
+            .send(helper.newBlog)
+            .expect(401)
+            .expect('Content-Type', /application\/json/)
+
+        const allBlogs = await helper.blogsInDatabase()
+        expect(allBlogs).toHaveLength(helper.initialBlogs.length)
+    })
+
     test('fails if URL is not provided', async () => {
         await api
             .post('/api/blogs')
+            .set('Authorization', `bearer ${token}`)
             .send(helper.blogWithoutUrl)
             .expect(400)
 
@@ -66,6 +98,7 @@ describe('adding a new blog', () => {
     test('fails if title is not provided', async () => {
         await api
             .post('/api/blogs')
+            .set('Authorization', `bearer ${token}`)
             .send(helper.blogWithoutTitle)
             .expect(400)
 
@@ -75,18 +108,28 @@ describe('adding a new blog', () => {
 })
 
 describe('deleting a blog', () => {
-    test('succeeds if the id is valid', async () => {
-        const blogsBeforeDeletion = await helper.blogsInDatabase()
-        const blogToBeDeleted = blogsBeforeDeletion[0]
-        expect(blogsBeforeDeletion).toContain(blogToBeDeleted)
+    test('succeeds if the user is the creator of the blog', async () => {
+        // create a blog
+        const response = await api
+            .post('/api/blogs')
+            .set('Authorization', `bearer ${token}`)
+            .send(helper.newBlog)
+
+        let allBlogs = await helper.blogsInDatabase()
+        const blogToBeDeleted = response.body
+        const blogsBeforeDeletion = allBlogs.map(blog => blog.id)
+        expect(blogsBeforeDeletion).toContain(blogToBeDeleted.id)
 
         await api
             .delete(`/api/blogs/${blogToBeDeleted.id}`)
+            .set('Authorization', `bearer ${token}`)
             .expect(204)
 
-        const blogsAFterDeletion = await helper.blogsInDatabase()
-        expect(blogsAFterDeletion).toHaveLength(blogsBeforeDeletion.length - 1)
-        expect(blogsAFterDeletion).not.toContain(blogToBeDeleted)
+        allBlogs = await helper.blogsInDatabase()
+        const blogsAfterDeletion = allBlogs.map(blog => blog.id)
+        expect(blogsAfterDeletion).toHaveLength(blogsBeforeDeletion.length - 1)
+        expect(blogsAfterDeletion).not.toContain(blogToBeDeleted.id)
+
     })
 })
 

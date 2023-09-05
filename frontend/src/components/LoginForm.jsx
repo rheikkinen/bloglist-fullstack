@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import loginService from '../services/login'
 
-const LoginForm = ({ setUser }) => {
+const LoginForm = ({ setUser, setLoggedIn }) => {
     const [username, setUsername] = useState('')
     const [password, setPassword] = useState('')
 
@@ -10,7 +10,11 @@ const LoginForm = ({ setUser }) => {
 
         try {
             const user = await loginService.login({ username, password })
+            window.localStorage.setItem(
+                'loggedUserDetails', JSON.stringify(user)
+            )
             setUser(user)
+            setLoggedIn(true)
             setUsername('')
             setPassword('')
         } catch (error) {
@@ -22,29 +26,29 @@ const LoginForm = ({ setUser }) => {
         <div>
             <form onSubmit={handleLogin}>
                 <div>
-                    Username
                     <input
+                        style={{ marginBottom: '2px' }}
                         type="text"
                         value={username}
+                        placeholder='Username'
                         name="Username"
                         onChange={({ target }) => setUsername(target.value)}
                     />
                 </div>
                 <div>
-                    Password
                     <input
+                        style={{ marginBottom: '2px' }}
                         type='password'
                         value={password}
+                        placeholder='Password'
                         name="Password"
                         onChange={({ target }) => setPassword(target.value)}
                     />
                 </div>
-                <button type="submit">Login</button>
+                <button type="submit">Log in</button>
             </form>
         </div>
     )
 }
-
-
 
 export default LoginForm

@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import Blog from './components/Blog'
 import LoginForm from './components/LoginForm'
 import LogoutButton from './components/LogoutButton'
+import BlogForm from './components/BlogForm'
 import blogService from './services/blogs'
 
 const App = () => {
@@ -10,9 +11,9 @@ const App = () => {
   const [loggedIn, setLoggedIn] = useState(false)
 
   useEffect(() => {
-    blogService.getAll().then(blogs =>
+    blogService.getAll().then(blogs => {
       setBlogs(blogs)
-    )
+    })
   }, [])
 
   useEffect(() => {
@@ -29,7 +30,9 @@ const App = () => {
         ? <LoginForm setUser={setUser} setLoggedIn={setLoggedIn} />
         : <div>
           <LogoutButton setUser={setUser} setLoggedIn={setLoggedIn} />
-          <h2>Logged in as {user.username}</h2>
+          <p>Logged in as {user.username}</p>
+          <h2>Add a new blog</h2>
+          <BlogForm blogs={blogs} setBlogs={setBlogs} />
           <h2>Blogs</h2>
           {
             blogs.map(blog =>

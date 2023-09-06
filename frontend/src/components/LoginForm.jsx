@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import loginService from '../services/login'
+import blogService from '../services/blogs'
 
 const LoginForm = ({ setUser, setLoggedIn }) => {
     const [username, setUsername] = useState('')
@@ -13,6 +14,7 @@ const LoginForm = ({ setUser, setLoggedIn }) => {
             window.localStorage.setItem(
                 'loggedUserDetails', JSON.stringify(user)
             )
+            blogService.setToken(user.token)
             setUser(user)
             setLoggedIn(true)
             setUsername('')
@@ -45,7 +47,7 @@ const LoginForm = ({ setUser, setLoggedIn }) => {
                         onChange={({ target }) => setPassword(target.value)}
                     />
                 </div>
-                <button type="submit">Log in</button>
+                <button style={{ marginTop: '5px' }} type="submit">Log in</button>
             </form>
         </div>
     )

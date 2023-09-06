@@ -1,25 +1,35 @@
 import { useState } from 'react'
 import blogService from '../services/blogs'
 
-const BlogForm = ({ blogs, setBlogs }) => {
+const BlogForm = ({ blogs, setBlogs, setNotification }) => {
     const [title, setTitle] = useState('')
     const [author, setAuthor] = useState('')
     const [url, setUrl] = useState('')
 
-    const handleSubmit = event => {
+    const handleSubmit = async event => {
         event.preventDefault()
 
         try {
-            blogService
-                .create({ title, author, url })
-                .then(returnedBlog => {
-                    setBlogs(blogs.concat(returnedBlog))
-                })
+            const newBlog = await blogService.create({ title, author, url })
+            setBlogs(blogs.concat(newBlog))
             setTitle('')
             setAuthor('')
             setUrl('')
-        } catch (error) {
-            console.error('Cannot create blog', error)
+            setNotification({
+                message: `A new blog "${newBlog.title}" ${newBlog.author && 'by ' + newBlog.author} successfully added`,
+                type: 'success'
+            })
+            setTimeout(() => {
+                setNotification(null)
+            }, 5000)
+        } catch (exception) {
+            setNotification({
+                message: exception.response.data.error,
+                type: 'error'
+            })
+            setTimeout(() => {
+                setNotification(null)
+            }, 5000)
         }
     }
 

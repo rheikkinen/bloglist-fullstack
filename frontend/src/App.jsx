@@ -63,12 +63,19 @@ const App = () => {
             />
           </ToggleVisibility>
 
-          <h2>Blogs</h2>
-          {
-            blogs.map(blog =>
-              <Blog key={blog.id} blog={blog} />
-            )
-          }
+          <table>
+            <caption style={{ fontSize: '1.5em', fontWeight: 'bolder' }}>Blogs</caption>
+            <tbody>
+              {
+                blogs.map(blog =>
+                  <tr key={blog.id}>
+                    <Blog blog={blog} />
+                  </tr>
+                )
+              }
+            </tbody>
+          </table>
+
         </div>
       }
     </div >

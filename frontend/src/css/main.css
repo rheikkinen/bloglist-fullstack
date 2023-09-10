@@ -1,3 +1,16 @@
 body {
   font-family: Arial, Helvetica, sans-serif;
 }
+
+table, tr {
+  width: fit-content;
+  border: 4px solid white;
+  background-color: lightgrey;
+  border-collapse: collapse;
+  margin-top: 0.83em;
+}
+
+th, td {
+  padding-left: 10px;
+  padding-right: 10px;
+}

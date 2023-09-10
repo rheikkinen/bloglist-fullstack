@@ -39,6 +39,7 @@ const LoginForm = ({ setUser, setLoggedIn, setNotification }) => {
 
     return (
         <div>
+            <h2>Log in to the Blog List App</h2>
             <form onSubmit={handleLogin}>
                 <div>
                     <input

@@ -42,13 +42,13 @@ const App = () => {
         ? <LoginForm
           setUser={setUser}
           setLoggedIn={setLoggedIn}
-          setNotification={setNotification}
+          showNotification={showNotification}
         />
         : <div>
           <LogoutButton
             setUser={setUser}
             setLoggedIn={setLoggedIn}
-            setNotification={setNotification}
+            showNotification={showNotification}
           />
           <p>Logged in as {user.username}</p>
           <ToggleVisibility
@@ -74,6 +74,5 @@ const App = () => {
     </div >
   )
 }
-
 
 export default App

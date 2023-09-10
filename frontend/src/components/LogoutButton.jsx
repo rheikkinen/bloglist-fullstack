@@ -1,15 +1,9 @@
-const LogoutButton = ({ setUser, setLoggedIn, setNotification }) => {
+const LogoutButton = ({ setUser, setLoggedIn, showNotification }) => {
     const handleLogout = () => {
         window.localStorage.removeItem('loggedUserDetails')
         setUser(null)
         setLoggedIn(false)
-        setNotification({
-            message: 'Successfully logged out',
-            type: 'success'
-        })
-        setTimeout(() => {
-            setNotification(null)
-        }, 5000)
+        showNotification('Successfully logged out', 'success')
     }
 
     return (

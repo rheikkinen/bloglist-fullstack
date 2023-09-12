@@ -3,7 +3,7 @@ body {
 }
 
 table, tr {
-  width: fit-content;
+  width: auto;
   border: 4px solid white;
   background-color: lightgrey;
   border-collapse: collapse;
@@ -13,4 +13,8 @@ table, tr {
 th, td {
   padding-left: 10px;
   padding-right: 10px;
+}
+
+button {
+  border-radius: 5px;
 }

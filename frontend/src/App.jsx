@@ -69,7 +69,7 @@ const App = () => {
               {
                 blogs.map(blog =>
                   <tr key={blog.id}>
-                    <Blog blog={blog} />
+                    <Blog blog={blog} blogs={blogs} setBlogs={setBlogs} />
                   </tr>
                 )
               }

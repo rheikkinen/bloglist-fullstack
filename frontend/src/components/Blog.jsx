@@ -1,12 +1,22 @@
 import { useState } from 'react'
+import LikeButton from './LikeButton'
 
-const Blog = ({ blog }) => {
+const Blog = ({ blog, blogs, setBlogs }) => {
   const [showDetails, setShowDetails] = useState(false)
+
+  const updateBlogs = async (likedBlog) => {
+    const updatedBlogs = blogs.map(blog => {
+      return blog.id === likedBlog.id
+        ? likedBlog
+        : blog
+    })
+    setBlogs(updatedBlogs)
+  }
 
   return (
     <>
       <td>
-        <ul style={{listStyle: 'none', paddingLeft: '10px'}}>
+        <ul style={{ listStyle: 'none', paddingLeft: '10px' }}>
           <li>
             "{blog.title}" <em>{blog.author && 'by ' + blog.author}</em>
           </li>
@@ -28,6 +38,9 @@ const Blog = ({ blog }) => {
             </>
           }
         </ul>
+      </td>
+      <td>
+        <LikeButton blog={blog} updateBlogs={updateBlogs} />
       </td>
       <td>
         <button onClick={() => setShowDetails(!showDetails)}>

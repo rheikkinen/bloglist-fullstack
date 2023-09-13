@@ -9,7 +9,7 @@ import ToggleVisibility from './components/ToggleVisibility'
 
 const App = () => {
   const [blogs, setBlogs] = useState([])
-  const [user, setUser] = useState(null)
+  const [user, setUser] = useState(JSON.parse(window.localStorage.getItem('loggedUserDetails')))
   const [loggedIn, setLoggedIn] = useState(false)
   const [notification, setNotification] = useState(null)
   const blogFormRef = useRef()
@@ -18,6 +18,7 @@ const App = () => {
     blogService.getAll().then(blogs => {
       setBlogs(blogs)
     })
+    blogService.setToken(user.token)
   }, [])
 
   useEffect(() => {

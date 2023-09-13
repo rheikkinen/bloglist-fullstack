@@ -1,7 +1,8 @@
 import { useState } from 'react'
 import LikeButton from './LikeButton'
+import blogService from '../services/blogs'
 
-const Blog = ({ blog, blogs, setBlogs }) => {
+const Blog = ({ blog, blogs, setBlogs, showNotification, user }) => {
   const [showDetails, setShowDetails] = useState(false)
 
   const updateBlogs = async (likedBlog) => {
@@ -13,6 +14,21 @@ const Blog = ({ blog, blogs, setBlogs }) => {
       })
       .sort((a, b) => b.likes - a.likes)
     setBlogs(updatedBlogs)
+  }
+
+  const handleDelete = async event => {
+    event.preventDefault()
+    if (window.confirm(`Delete "${blog.title}" by ${blog.author}?`)) {
+      try {
+        await blogService.deleteBlog(blog)
+        const updatedBlogs = blogs
+          .filter(b => b.id !== blog.id)
+        setBlogs(updatedBlogs)
+        showNotification(`Blog "${blog.title}" by ${blog.author} successfully deleted`, 'success')
+      } catch (exception) {
+        showNotification(exception.response.data.error, 'error')
+      }
+    }
   }
 
   return (
@@ -36,6 +52,11 @@ const Blog = ({ blog, blogs, setBlogs }) => {
               <li>{blog.likes} likes</li>
               {blog.user &&
                 <li>Added by {blog.user.name || blog.user.username}</li>
+              }
+              {user && blog.user && user.username === blog.user.username &&
+                <li>
+                  <button style={{ backgroundColor: 'lightpink' }} onClick={handleDelete}>Delete blog</button>
+                </li>
               }
             </>
           }

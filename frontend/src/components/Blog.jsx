@@ -5,11 +5,13 @@ const Blog = ({ blog, blogs, setBlogs }) => {
   const [showDetails, setShowDetails] = useState(false)
 
   const updateBlogs = async (likedBlog) => {
-    const updatedBlogs = blogs.map(blog => {
-      return blog.id === likedBlog.id
-        ? likedBlog
-        : blog
-    })
+    const updatedBlogs = blogs
+      .map(blog => {
+        return blog.id === likedBlog.id
+          ? likedBlog
+          : blog
+      })
+      .sort((a, b) => b.likes - a.likes)
     setBlogs(updatedBlogs)
   }
 

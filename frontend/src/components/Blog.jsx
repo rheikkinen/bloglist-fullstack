@@ -68,7 +68,7 @@ const Blog = ({ blog, blogs, setBlogs, showNotification, user }) => {
         <LikeButton blog={blog} updateBlogs={updateBlogs} />
       </td>
       <td>
-        <button onClick={() => setShowDetails(!showDetails)}>
+        <button data-testid='showDetailsButton' onClick={() => setShowDetails(!showDetails)}>
           {showDetails ? 'Hide details' : 'Show details'}
         </button>
       </td>

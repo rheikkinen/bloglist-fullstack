@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import LikeButton from './LikeButton'
 import blogService from '../services/blogs'
+import PropTypes from 'prop-types'
 
 const Blog = ({ blog, blogs, setBlogs, showNotification, user }) => {
   const [showDetails, setShowDetails] = useState(false)
@@ -36,14 +37,15 @@ const Blog = ({ blog, blogs, setBlogs, showNotification, user }) => {
       <td>
         <ul style={{ listStyle: 'none', paddingLeft: '10px' }}>
           <li>
-            "{blog.title}" <em>{blog.author && 'by ' + blog.author}</em>
+            {blog.title} <em>{blog.author && 'by ' + blog.author}</em>
           </li>
           {
             showDetails &&
             <>
-              <li><a href={blog.url.includes('//')
-                ? blog.url
-                : `//${blog.url}`}
+              <li><a
+                href={blog.url.includes('//')
+                  ? blog.url
+                  : `//${blog.url}`}
                 target='_blank'
                 rel='noreferrer'
               >
@@ -73,5 +75,14 @@ const Blog = ({ blog, blogs, setBlogs, showNotification, user }) => {
     </>
   )
 }
+
+Blog.PropTypes = {
+  blog: PropTypes.object.isRequired,
+  blogs: PropTypes.array.isRequired,
+  setBlogs: PropTypes.func.isRequired,
+  showNotification: PropTypes.func.isRequired,
+  user: PropTypes.object.isRequired
+}
+
 
 export default Blog

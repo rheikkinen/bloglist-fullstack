@@ -18,8 +18,8 @@ const App = () => {
     blogService.getAll().then(blogs => {
       setBlogs(blogs)
     })
-    blogService.setToken(user.token)
-  }, [])
+    if (user) blogService.setToken(user.token)
+  }, []) // eslint-disable-line
 
   useEffect(() => {
     const loggedUser = window.localStorage.getItem('loggedUserDetails')

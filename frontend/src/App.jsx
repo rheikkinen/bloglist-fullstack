@@ -29,6 +29,16 @@ const App = () => {
     }
   }, [loggedIn])
 
+  const createBlog = async (newBlog) => {
+    try {
+      const addedBlog = await blogService.create(newBlog)
+      setBlogs(blogs.concat(addedBlog))
+      showNotification(`A new blog "${newBlog.title}" ${newBlog.author && 'by ' + newBlog.author} successfully added`, 'success')
+    } catch (exception) {
+      showNotification(exception.response.data.error, 'error')
+    }
+  }
+
   const showNotification = (message, type) => {
     setNotification({ message, type })
     setTimeout(() => {
@@ -57,9 +67,7 @@ const App = () => {
             ref={blogFormRef}
           >
             <BlogForm
-              blogs={blogs}
-              setBlogs={setBlogs}
-              showNotification={showNotification}
+              createBlog={createBlog}
               toggleVisibility={() => blogFormRef.current.toggleVisibility()}
             />
           </ToggleVisibility>

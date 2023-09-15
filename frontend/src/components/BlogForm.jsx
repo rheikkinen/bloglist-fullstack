@@ -1,26 +1,19 @@
 import { useState } from 'react'
-import blogService from '../services/blogs'
 import PropTypes from 'prop-types'
 
-const BlogForm = ({ blogs, setBlogs, showNotification, toggleVisibility }) => {
+const BlogForm = ({ toggleVisibility, createBlog }) => {
   const [title, setTitle] = useState('')
   const [author, setAuthor] = useState('')
   const [url, setUrl] = useState('')
 
-  const handleSubmit = async event => {
+  const handleSubmit = event => {
     event.preventDefault()
-    try {
-      const newBlog = await blogService.create({ title, author, url })
-      setBlogs(blogs.concat(newBlog))
-      toggleVisibility()
-      setTitle('')
-      setAuthor('')
-      setUrl('')
-      showNotification(`A new blog "${newBlog.title}" ${newBlog.author && 'by ' + newBlog.author} successfully added`, 'success')
-    } catch (exception) {
-      showNotification(exception.response.data.error, 'error')
-    }
+    createBlog({ title, author, url })
 
+    toggleVisibility()
+    setTitle('')
+    setAuthor('')
+    setUrl('')
   }
 
   return (
@@ -64,10 +57,8 @@ const BlogForm = ({ blogs, setBlogs, showNotification, toggleVisibility }) => {
 }
 
 BlogForm.propTypes = {
-  blogs: PropTypes.array.isRequired,
-  setBlogs: PropTypes.func.isRequired,
-  showNotification: PropTypes.func.isRequired,
-  toggleVisibility: PropTypes.func.isRequired
+  toggleVisibility: PropTypes.func.isRequired,
+  createBlog: PropTypes.func.isRequired
 }
 
 export default BlogForm

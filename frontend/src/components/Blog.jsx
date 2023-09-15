@@ -6,7 +6,8 @@ import PropTypes from 'prop-types'
 const Blog = ({ blog, blogs, setBlogs, showNotification, user }) => {
   const [showDetails, setShowDetails] = useState(false)
 
-  const updateBlogs = async (likedBlog) => {
+  const handleLike = async () => {
+    const likedBlog = await blogService.like(blog)
     const updatedBlogs = blogs
       .map(blog => {
         return blog.id === likedBlog.id
@@ -65,7 +66,7 @@ const Blog = ({ blog, blogs, setBlogs, showNotification, user }) => {
         </ul>
       </td>
       <td>
-        <LikeButton blog={blog} updateBlogs={updateBlogs} />
+        <LikeButton blog={blog} handleLike={handleLike} />
       </td>
       <td>
         <button data-testid='showDetailsButton' onClick={() => setShowDetails(!showDetails)}>
@@ -76,7 +77,7 @@ const Blog = ({ blog, blogs, setBlogs, showNotification, user }) => {
   )
 }
 
-Blog.PropTypes = {
+Blog.propTypes = {
   blog: PropTypes.object.isRequired,
   blogs: PropTypes.array.isRequired,
   setBlogs: PropTypes.func.isRequired,

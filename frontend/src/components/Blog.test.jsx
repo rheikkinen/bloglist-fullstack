@@ -4,18 +4,7 @@ import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import Blog from './Blog'
 
-test('renders only the blog title and author by default', () => {
-  const blog = {
-    title: 'Test title',
-    author: 'Test author',
-    url: 'https://test.com',
-    likes: 5,
-    user: {
-      username: 'testuser',
-      name: 'Test user'
-    }
-  }
-
+test('renders only the title and author by default', () => {
   render(<Blog blog={blog} />)
 
   expect(screen.getByText(blog.title)).toBeDefined()
@@ -27,18 +16,7 @@ test('renders only the blog title and author by default', () => {
 
 })
 
-test('renders the blog url and likes when the "Show details" button is clicked', async () => {
-  const blog = {
-    title: 'Test title',
-    author: 'Test author',
-    url: 'https://test.com',
-    likes: 5,
-    user: {
-      username: 'testuser',
-      name: 'Test user'
-    }
-  }
-
+test('renders the url, likes and creator when the "Show details" button is clicked', async () => {
   render(<Blog blog={blog} />)
 
   const user = userEvent.setup()

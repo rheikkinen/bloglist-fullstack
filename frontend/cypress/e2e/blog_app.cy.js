@@ -13,16 +13,12 @@ describe('Blog app', () => {
 
   describe('Login', () => {
     it('succeeds with correct credentials', () => {
-      cy.get('input[placeholder="Username"]').type('testuser')
-      cy.get('input[placeholder="Password"]').type('testpassword')
-      cy.get('button').contains('Log in').click()
+      cy.login({ username: 'testuser', password: 'testpassword' })
       cy.contains('Logged in as testuser')
     })
 
     it('fails with incorrect password', () => {
-      cy.get('input[placeholder="Username"]').type('testuser')
-      cy.get('input[placeholder="Password"]').type('wrong_password')
-      cy.get('button').contains('Log in').click()
+      cy.login({ username: 'testuser', password: 'wrong_password' })
       cy.contains('Invalid username or password')
       // The login form should still be visible
       cy.get('input[placeholder="Username"]')
@@ -30,13 +26,26 @@ describe('Blog app', () => {
     })
 
     it('fails with incorrect username', () => {
-      cy.get('input[placeholder="Username"]').type('wrong_username')
-      cy.get('input[placeholder="Password"]').type('testpassword')
-      cy.get('button').contains('Log in').click()
+      cy.login({ username: 'wrong_username', password: 'testpassword' })
       cy.contains('Invalid username or password')
       // The login form should still be visible
       cy.get('input[placeholder="Username"]')
       cy.get('input[placeholder="Password"]')
+    })
+  })
+
+  describe('When logged in', () => {
+    beforeEach(() => {
+      cy.login({ username: 'testuser', password: 'testpassword' })
+    })
+
+    it('a blog can be created', () => {
+      cy.contains('Add a new blog').click()
+      cy.get('input[placeholder="Title"]').type('Test Blog')
+      cy.get('input[placeholder="Author"]').type('Test Author')
+      cy.get('input[placeholder="Url"]').type('http://testblog.com')
+      cy.get('button').contains('Submit').click()
+      cy.contains('Test Blog by Test Author')
     })
   })
 })

@@ -74,5 +74,49 @@ describe('Blog app', () => {
       cy.contains('Show details').click()
       cy.get('button').contains('Delete blog').should('not.exist')
     })
+
+    it('the list of blogs is ordered by the number of likes', () => {
+      // Create three blogs
+      cy.createBlog({ title: 'Blog 1', author: 'Author 1', url: 'testblog1.com' })
+      cy.createBlog({ title: 'Blog 2', author: 'Author 2', url: 'testblog2.com' })
+      cy.createBlog({ title: 'Blog 3', author: 'Author 3', url: 'testblog3.com' })
+
+      // Set aliases and open details for each blog
+      cy.contains('Blog 1 by Author 1').parent().parent().parent().as('blog1')
+      cy.get('@blog1').contains('Show details').click()
+      cy.contains('Blog 2 by Author 2').parent().parent().parent().as('blog2')
+      cy.get('@blog2').contains('Show details').click()
+      cy.contains('Blog 3 by Author 3').parent().parent().parent().as('blog3')
+      cy.get('@blog3').contains('Show details').click()
+
+      // Check that blog 1 is on the top of the table by default
+      cy.get('tr').first().contains('Blog 1 by Author 1')
+
+      // Like blog 3 once
+      cy.get('@blog3').contains('Like').click()
+      // Check that blog 3 is on the top of the table
+      cy.get('tr').first().contains('Blog 3 by Author 3')
+
+      // Like blog 2 twice
+      cy.get('@blog2').contains('Like').click()
+      cy.wait(1000)
+      cy.get('@blog2').contains('Like').click()
+      // Check that blog 2 is on the top of the table
+      cy.get('tr').first().contains('Blog 2 by Author 2')
+
+      // Like blog 1 three times
+      cy.get('@blog1').contains('Like').click()
+      cy.wait(1000)
+      cy.get('@blog1').contains('Like').click()
+      cy.wait(1000)
+      cy.get('@blog1').contains('Like').click()
+      // Check that blog 1 is now on the top of the table
+      cy.get('tr').first().contains('Blog 1 by Author 1')
+
+      // Check that the blogs have correct number of likes
+      cy.get('@blog1').contains('3 likes')
+      cy.get('@blog2').contains('2 likes')
+      cy.get('@blog3').contains('1 likes')
+    })
   })
 })

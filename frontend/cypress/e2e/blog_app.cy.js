@@ -52,5 +52,27 @@ describe('Blog app', () => {
       cy.get('button').contains('Like').click()
       cy.contains('1 likes')
     })
+
+    it('a blog can be deleted', () => {
+      cy.createBlog({ title: 'Test Blog', author: 'Test Author', url: 'testblog.com' })
+      cy.contains('Test Blog by Test Author')
+      cy.contains('Show details').click()
+      cy.get('button').contains('Delete blog').click()
+      cy.contains('Test Blog by Test Author').should('not.exist')
+    })
+
+    it('a delete button is shown only if the user is the creator of the blog', () => {
+      cy.createBlog({ title: 'Test Blog', author: 'Test Author', url: 'testblog.com' })
+      cy.contains('Test Blog by Test Author')
+      cy.contains('Show details').click()
+      cy.get('button').contains('Delete blog')
+      cy.contains('Log out').click()
+      // Create another user and log in
+      cy.registerUser({ username: 'anotheruser', password: 'testpassword' })
+      cy.login({ username: 'anotheruser', password: 'testpassword' })
+      cy.contains('Test Blog by Test Author')
+      cy.contains('Show details').click()
+      cy.get('button').contains('Delete blog').should('not.exist')
+    })
   })
 })

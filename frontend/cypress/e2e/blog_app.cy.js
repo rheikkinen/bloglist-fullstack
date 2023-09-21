@@ -40,12 +40,17 @@ describe('Blog app', () => {
     })
 
     it('a blog can be created', () => {
-      cy.contains('Add a new blog').click()
-      cy.get('input[placeholder="Title"]').type('Test Blog')
-      cy.get('input[placeholder="Author"]').type('Test Author')
-      cy.get('input[placeholder="Url"]').type('http://testblog.com')
-      cy.get('button').contains('Submit').click()
+      cy.createBlog({ title: 'Test Blog', author: 'Test Author', url: 'testblog.com' })
       cy.contains('Test Blog by Test Author')
+    })
+
+    it('a blog can be liked', () => {
+      cy.createBlog({ title: 'Test Blog', author: 'Test Author', url: 'testblog.com' })
+      cy.contains('Test Blog by Test Author')
+      cy.contains('Show details').click()
+      cy.contains('0 likes')
+      cy.get('button').contains('Like').click()
+      cy.contains('1 likes')
     })
   })
 })

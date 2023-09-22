@@ -15,7 +15,7 @@ Cypress.Commands.add('login', (credentials) => {
 
 Cypress.Commands.add('shouldBeLoggedIn', () => {
   cy.contains('Logged in as')
-  window.localStorage.getItem('loggedUserDetails')
+  cy.window().its('localStorage.loggedUserDetails').should('exist')
 })
 
 Cypress.Commands.add('createBlog', (blog) => {

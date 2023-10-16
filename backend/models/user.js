@@ -3,31 +3,31 @@ const uniqueValidator = require('mongoose-unique-validator')
 
 // user has a username, password and name
 const userSchema = mongoose.Schema({
-    username: {
-        type: String,
-        required: [true, 'Username is required'],
-        unique: true,
-        minlength: [3, 'Username must be at least 3 characters long'],
+  username: {
+    type: String,
+    required: [true, 'Username is required'],
+    unique: true,
+    minlength: [3, 'Username must be at least 3 characters long'],
+  },
+  password: String,
+  name: String,
+  blogs: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Blog',
     },
-    password: String,
-    name: String,
-    blogs: [
-        {
-            type: mongoose.Schema.Types.ObjectId,
-            ref: 'Blog'
-        }
-    ]
+  ],
 })
 
 userSchema.plugin(uniqueValidator, { message: 'Username must be unique' })
 
 userSchema.set('toJSON', {
-    transform: (document, returnedObject) => {
-        returnedObject.id = returnedObject._id.toString()
-        delete returnedObject._id
-        delete returnedObject.__v
-        delete returnedObject.password
-    }
+  transform: (document, returnedObject) => {
+    returnedObject.id = returnedObject._id.toString()
+    delete returnedObject._id
+    delete returnedObject.__v
+    delete returnedObject.password
+  },
 })
 
 const User = mongoose.model('User', userSchema)

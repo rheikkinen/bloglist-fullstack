@@ -6,7 +6,7 @@ const BlogForm = ({ toggleVisibility, createBlog }) => {
   const [author, setAuthor] = useState('')
   const [url, setUrl] = useState('')
 
-  const handleSubmit = event => {
+  const handleSubmit = (event) => {
     event.preventDefault()
     createBlog({ title, author, url })
 
@@ -25,7 +25,7 @@ const BlogForm = ({ toggleVisibility, createBlog }) => {
             style={{ marginBottom: '2px' }}
             type="text"
             value={title}
-            placeholder='Title'
+            placeholder="Title"
             name="Title"
             onChange={({ target }) => setTitle(target.value)}
           />
@@ -33,9 +33,9 @@ const BlogForm = ({ toggleVisibility, createBlog }) => {
         <div>
           <input
             style={{ marginBottom: '2px' }}
-            type='text'
+            type="text"
             value={author}
-            placeholder='Author'
+            placeholder="Author"
             name="Author"
             onChange={({ target }) => setAuthor(target.value)}
           />
@@ -43,14 +43,16 @@ const BlogForm = ({ toggleVisibility, createBlog }) => {
         <div>
           <input
             style={{ marginBottom: '2px' }}
-            type='text'
+            type="text"
             value={url}
-            placeholder='Url'
+            placeholder="Url"
             name="Url"
             onChange={({ target }) => setUrl(target.value)}
           />
         </div>
-        <button style={{ marginTop: '5px' }} type="submit">Submit</button>
+        <button style={{ marginTop: '5px' }} type="submit">
+          Submit
+        </button>
       </form>
     </div>
   )
@@ -58,7 +60,7 @@ const BlogForm = ({ toggleVisibility, createBlog }) => {
 
 BlogForm.propTypes = {
   toggleVisibility: PropTypes.func.isRequired,
-  createBlog: PropTypes.func.isRequired
+  createBlog: PropTypes.func.isRequired,
 }
 
 export default BlogForm

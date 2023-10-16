@@ -7,11 +7,7 @@ const Notification = ({ notification }) => {
     window.scrollTo(0, 0)
   }
 
-  return (
-    <div className={notification.type}>
-      {notification.message}
-    </div>
-  )
+  return <div className={notification.type}>{notification.message}</div>
 }
 
 export default Notification

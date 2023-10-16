@@ -7,17 +7,14 @@ const ToggleVisibility = forwardRef((props, ref) => {
 
   useImperativeHandle(ref, () => {
     return {
-      toggleVisibility // pass toggleVisibility function to parent component
+      toggleVisibility, // pass toggleVisibility function to parent component
     }
   })
 
   return (
     <div>
       {visible && props.children}
-      <button
-        style={{ marginTop: '2px' }}
-        onClick={toggleVisibility}
-      >
+      <button style={{ marginTop: '2px' }} onClick={toggleVisibility}>
         {visible ? 'Cancel' : props.buttonLabel}
       </button>
     </div>

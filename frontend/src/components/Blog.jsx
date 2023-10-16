@@ -9,24 +9,24 @@ const Blog = ({ blog, blogs, setBlogs, showNotification, user }) => {
   const handleLike = async () => {
     const likedBlog = await blogService.like(blog)
     const updatedBlogs = blogs
-      .map(blog => {
-        return blog.id === likedBlog.id
-          ? likedBlog
-          : blog
+      .map((blog) => {
+        return blog.id === likedBlog.id ? likedBlog : blog
       })
       .sort((a, b) => b.likes - a.likes)
     setBlogs(updatedBlogs)
   }
 
-  const handleDelete = async event => {
+  const handleDelete = async (event) => {
     event.preventDefault()
     if (window.confirm(`Delete "${blog.title}" by ${blog.author}?`)) {
       try {
         await blogService.deleteBlog(blog)
-        const updatedBlogs = blogs
-          .filter(b => b.id !== blog.id)
+        const updatedBlogs = blogs.filter((b) => b.id !== blog.id)
         setBlogs(updatedBlogs)
-        showNotification(`Blog "${blog.title}" by ${blog.author} successfully deleted`, 'success')
+        showNotification(
+          `Blog "${blog.title}" by ${blog.author} successfully deleted`,
+          'success',
+        )
       } catch (exception) {
         showNotification(exception.response.data.error, 'error')
       }
@@ -40,36 +40,43 @@ const Blog = ({ blog, blogs, setBlogs, showNotification, user }) => {
           <li>
             {blog.title} <em>{blog.author && 'by ' + blog.author}</em>
           </li>
-          {
-            showDetails &&
+          {showDetails && (
             <>
-              <li><a
-                href={blog.url.includes('//')
-                  ? blog.url
-                  : `//${blog.url}`}
-                target='_blank'
-                rel='noreferrer'
-              >
-                {blog.url}
-              </a></li>
+              <li>
+                <a
+                  href={blog.url.includes('//') ? blog.url : `//${blog.url}`}
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  {blog.url}
+                </a>
+              </li>
               <li>{blog.likes} likes</li>
-              {blog.user &&
+              {blog.user && (
                 <li>Added by {blog.user.name || blog.user.username}</li>
-              }
-              {user && blog.user && user.username === blog.user.username &&
+              )}
+              {user && blog.user && user.username === blog.user.username && (
                 <li>
-                  <button style={{ backgroundColor: 'lightpink' }} onClick={handleDelete}>Delete blog</button>
+                  <button
+                    style={{ backgroundColor: 'lightpink' }}
+                    onClick={handleDelete}
+                  >
+                    Delete blog
+                  </button>
                 </li>
-              }
+              )}
             </>
-          }
+          )}
         </ul>
       </td>
       <td>
         <LikeButton blog={blog} handleLike={handleLike} />
       </td>
       <td>
-        <button data-testid='showDetailsButton' onClick={() => setShowDetails(!showDetails)}>
+        <button
+          data-testid="showDetailsButton"
+          onClick={() => setShowDetails(!showDetails)}
+        >
           {showDetails ? 'Hide details' : 'Show details'}
         </button>
       </td>
@@ -82,8 +89,7 @@ Blog.propTypes = {
   blogs: PropTypes.array.isRequired,
   setBlogs: PropTypes.func.isRequired,
   showNotification: PropTypes.func.isRequired,
-  user: PropTypes.object.isRequired
+  user: PropTypes.object.isRequired,
 }
-
 
 export default Blog

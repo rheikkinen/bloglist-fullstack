@@ -7,14 +7,12 @@ const LoginForm = ({ setUser, setLoggedIn, showNotification }) => {
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
 
-  const handleLogin = async event => {
+  const handleLogin = async (event) => {
     event.preventDefault()
 
     try {
       const user = await loginService.login({ username, password })
-      window.localStorage.setItem(
-        'loggedUserDetails', JSON.stringify(user)
-      )
+      window.localStorage.setItem('loggedUserDetails', JSON.stringify(user))
       blogService.setToken(user.token)
       setUser(user)
       setLoggedIn(true)
@@ -35,7 +33,7 @@ const LoginForm = ({ setUser, setLoggedIn, showNotification }) => {
             style={{ marginBottom: '2px' }}
             type="text"
             value={username}
-            placeholder='Username'
+            placeholder="Username"
             name="Username"
             onChange={({ target }) => setUsername(target.value)}
           />
@@ -43,14 +41,16 @@ const LoginForm = ({ setUser, setLoggedIn, showNotification }) => {
         <div>
           <input
             style={{ marginBottom: '2px' }}
-            type='password'
+            type="password"
             value={password}
-            placeholder='Password'
+            placeholder="Password"
             name="Password"
             onChange={({ target }) => setPassword(target.value)}
           />
         </div>
-        <button style={{ marginTop: '5px' }} type="submit">Log in</button>
+        <button style={{ marginTop: '5px' }} type="submit">
+          Log in
+        </button>
       </form>
     </div>
   )
@@ -59,7 +59,7 @@ const LoginForm = ({ setUser, setLoggedIn, showNotification }) => {
 LoginForm.propTypes = {
   setUser: PropTypes.func.isRequired,
   setLoggedIn: PropTypes.func.isRequired,
-  showNotification: PropTypes.func.isRequired
+  showNotification: PropTypes.func.isRequired,
 }
 
 export default LoginForm

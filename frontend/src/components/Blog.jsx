@@ -2,9 +2,12 @@ import { useState } from 'react'
 import LikeButton from './LikeButton'
 import blogService from '../services/blogs'
 import PropTypes from 'prop-types'
+import { useDispatch } from 'react-redux'
+import { setNotificationWithTimeout } from '../features/notification/notificationSlice'
 
-const Blog = ({ blog, blogs, setBlogs, showNotification, user }) => {
+const Blog = ({ blog, blogs, setBlogs, user }) => {
   const [showDetails, setShowDetails] = useState(false)
+  const dispatch = useDispatch()
 
   const handleLike = async () => {
     const likedBlog = await blogService.like(blog)
@@ -23,12 +26,17 @@ const Blog = ({ blog, blogs, setBlogs, showNotification, user }) => {
         await blogService.deleteBlog(blog)
         const updatedBlogs = blogs.filter((b) => b.id !== blog.id)
         setBlogs(updatedBlogs)
-        showNotification(
-          `Blog "${blog.title}" by ${blog.author} successfully deleted`,
-          'success',
+        dispatch(
+          setNotificationWithTimeout(
+            `Blog "${blog.title}" by ${blog.author} successfully deleted`,
+            'success',
+            5,
+          ),
         )
       } catch (exception) {
-        showNotification(exception.response.data.error, 'error')
+        dispatch(
+          setNotificationWithTimeout(exception.response.data.error, 'error', 5),
+        )
       }
     }
   }
@@ -88,7 +96,6 @@ Blog.propTypes = {
   blog: PropTypes.object.isRequired,
   blogs: PropTypes.array.isRequired,
   setBlogs: PropTypes.func.isRequired,
-  showNotification: PropTypes.func.isRequired,
   user: PropTypes.object.isRequired,
 }
 

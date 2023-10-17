@@ -3,9 +3,11 @@ import Blog from './components/Blog'
 import LoginForm from './components/LoginForm'
 import LogoutButton from './components/LogoutButton'
 import BlogForm from './components/BlogForm'
-import Notification from './components/Notification'
+import Notification from './features/notification/Notification'
 import blogService from './services/blogs'
 import ToggleVisibility from './components/ToggleVisibility'
+import { setNotificationWithTimeout } from './features/notification/notificationSlice'
+import { useDispatch } from 'react-redux'
 
 const App = () => {
   const [blogs, setBlogs] = useState([])
@@ -13,7 +15,6 @@ const App = () => {
     JSON.parse(window.localStorage.getItem('loggedUserDetails')),
   )
   const [loggedIn, setLoggedIn] = useState(false)
-  const [notification, setNotification] = useState(null)
   const blogFormRef = useRef()
 
   useEffect(() => {
@@ -31,46 +32,36 @@ const App = () => {
     }
   }, [loggedIn])
 
+  const dispatch = useDispatch()
+
   const createBlog = async (newBlog) => {
     try {
       const addedBlog = await blogService.create(newBlog)
       setBlogs(blogs.concat(addedBlog))
-      showNotification(
-        `A new blog "${newBlog.title}" ${
-          newBlog.author && 'by ' + newBlog.author
-        } successfully added`,
-        'success',
+      dispatch(
+        setNotificationWithTimeout(
+          `A new blog "${newBlog.title}" ${
+            newBlog.author && 'by ' + newBlog.author
+          } successfully added`,
+          'success',
+          5,
+        ),
       )
     } catch (exception) {
-      showNotification(exception.response.data.error, 'error')
+      dispatch(
+        setNotificationWithTimeout(exception.response.data.error, 'error', 5),
+      )
     }
   }
 
-  const showNotification = (message, type) => {
-    setNotification({ message, type })
-    setTimeout(() => {
-      setNotification(null)
-    }, 5000)
-  }
-
-  const truth = false
-
   return (
     <div>
-      <Notification notification={notification} />
+      <Notification />
       {user === null ? (
-        <LoginForm
-          setUser={setUser}
-          setLoggedIn={setLoggedIn}
-          showNotification={showNotification}
-        />
+        <LoginForm setUser={setUser} setLoggedIn={setLoggedIn} />
       ) : (
         <div>
-          <LogoutButton
-            setUser={setUser}
-            setLoggedIn={setLoggedIn}
-            showNotification={showNotification}
-          />
+          <LogoutButton setUser={setUser} setLoggedIn={setLoggedIn} />
           <p>Logged in as {user.username}</p>
           <ToggleVisibility buttonLabel="Add a new blog" ref={blogFormRef}>
             <BlogForm
@@ -90,7 +81,6 @@ const App = () => {
                     blog={blog}
                     blogs={blogs}
                     setBlogs={setBlogs}
-                    showNotification={showNotification}
                     user={user}
                   />
                 </tr>

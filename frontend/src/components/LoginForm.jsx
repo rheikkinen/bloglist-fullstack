@@ -2,10 +2,14 @@ import { useState } from 'react'
 import loginService from '../services/login'
 import blogService from '../services/blogs'
 import PropTypes from 'prop-types'
+import { setNotificationWithTimeout } from '../features/notification/notificationSlice'
+import { useDispatch } from 'react-redux'
 
 const LoginForm = ({ setUser, setLoggedIn, showNotification }) => {
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
+
+  const dispatch = useDispatch()
 
   const handleLogin = async (event) => {
     event.preventDefault()
@@ -18,9 +22,17 @@ const LoginForm = ({ setUser, setLoggedIn, showNotification }) => {
       setLoggedIn(true)
       setUsername('')
       setPassword('')
-      showNotification(`Logged in as ${user.username}`, 'success')
+      dispatch(
+        setNotificationWithTimeout(
+          `Logged in as ${user.username}`,
+          'success',
+          5,
+        ),
+      )
     } catch (exception) {
-      showNotification(exception.response.data.error, 'error')
+      dispatch(
+        setNotificationWithTimeout(exception.response.data.error, 'error', 5),
+      )
     }
   }
 
@@ -59,7 +71,6 @@ const LoginForm = ({ setUser, setLoggedIn, showNotification }) => {
 LoginForm.propTypes = {
   setUser: PropTypes.func.isRequired,
   setLoggedIn: PropTypes.func.isRequired,
-  showNotification: PropTypes.func.isRequired,
 }
 
 export default LoginForm

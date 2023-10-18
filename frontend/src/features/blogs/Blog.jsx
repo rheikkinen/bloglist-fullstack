@@ -1,9 +1,9 @@
 import { useState } from 'react'
-import LikeButton from './LikeButton'
-import blogService from '../services/blogs'
+import LikeButton from '../../components/LikeButton'
+import blogService from '../../services/blogs'
 import PropTypes from 'prop-types'
 import { useDispatch } from 'react-redux'
-import { setNotificationWithTimeout } from '../features/notification/notificationSlice'
+import { setNotificationWithTimeout } from '../notification/notificationSlice'
 
 const Blog = ({ blog, blogs, setBlogs, user }) => {
   const [showDetails, setShowDetails] = useState(false)

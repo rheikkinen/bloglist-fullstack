@@ -1,26 +1,26 @@
 import { useState, useEffect, useRef } from 'react'
-import Blog from './components/Blog'
+import Blog from './features/blogs/Blog'
 import LoginForm from './components/LoginForm'
 import LogoutButton from './components/LogoutButton'
-import BlogForm from './components/BlogForm'
+import BlogForm from './features/blogs/BlogForm'
 import Notification from './features/notification/Notification'
 import blogService from './services/blogs'
 import ToggleVisibility from './components/ToggleVisibility'
-import { setNotificationWithTimeout } from './features/notification/notificationSlice'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
+import { initializeBlogs } from './features/blogs/blogSlice'
 
 const App = () => {
-  const [blogs, setBlogs] = useState([])
   const [user, setUser] = useState(
     JSON.parse(window.localStorage.getItem('loggedUserDetails')),
   )
   const [loggedIn, setLoggedIn] = useState(false)
   const blogFormRef = useRef()
 
+  const blogs = useSelector((state) => state.blogs)
+  const dispatch = useDispatch()
+
   useEffect(() => {
-    blogService.getAll().then((blogs) => {
-      setBlogs(blogs)
-    })
+    dispatch(initializeBlogs())
     if (user) blogService.setToken(user.token)
   }, []) // eslint-disable-line
 
@@ -31,28 +31,6 @@ const App = () => {
       setUser(user)
     }
   }, [loggedIn])
-
-  const dispatch = useDispatch()
-
-  const createBlog = async (newBlog) => {
-    try {
-      const addedBlog = await blogService.create(newBlog)
-      setBlogs(blogs.concat(addedBlog))
-      dispatch(
-        setNotificationWithTimeout(
-          `A new blog "${newBlog.title}" ${
-            newBlog.author && 'by ' + newBlog.author
-          } successfully added`,
-          'success',
-          5,
-        ),
-      )
-    } catch (exception) {
-      dispatch(
-        setNotificationWithTimeout(exception.response.data.error, 'error', 5),
-      )
-    }
-  }
 
   return (
     <div>
@@ -65,7 +43,6 @@ const App = () => {
           <p>Logged in as {user.username}</p>
           <ToggleVisibility buttonLabel="Add a new blog" ref={blogFormRef}>
             <BlogForm
-              createBlog={createBlog}
               toggleVisibility={() => blogFormRef.current.toggleVisibility()}
             />
           </ToggleVisibility>
@@ -77,12 +54,7 @@ const App = () => {
             <tbody>
               {blogs.map((blog) => (
                 <tr key={blog.id}>
-                  <Blog
-                    blog={blog}
-                    blogs={blogs}
-                    setBlogs={setBlogs}
-                    user={user}
-                  />
+                  <Blog blog={blog} blogs={blogs} user={user} />
                 </tr>
               ))}
             </tbody>

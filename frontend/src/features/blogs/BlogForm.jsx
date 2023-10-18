@@ -1,19 +1,39 @@
 import { useState } from 'react'
 import PropTypes from 'prop-types'
+import { createBlog } from './blogSlice'
+import { useDispatch } from 'react-redux'
+import { setNotificationWithTimeout } from '../notification/notificationSlice'
 
-const BlogForm = ({ toggleVisibility, createBlog }) => {
+const BlogForm = ({ toggleVisibility }) => {
   const [title, setTitle] = useState('')
   const [author, setAuthor] = useState('')
   const [url, setUrl] = useState('')
 
-  const handleSubmit = (event) => {
-    event.preventDefault()
-    createBlog({ title, author, url })
+  const dispatch = useDispatch()
 
-    toggleVisibility()
-    setTitle('')
-    setAuthor('')
-    setUrl('')
+  const handleSubmit = async (event) => {
+    event.preventDefault()
+    try {
+      await dispatch(createBlog({ title, author, url }))
+      dispatch(
+        setNotificationWithTimeout(
+          `A new blog "${title}" ${
+            author && 'by ' + author
+          } successfully added`,
+          'success',
+          5,
+        ),
+      )
+      toggleVisibility()
+      setTitle('')
+      setAuthor('')
+      setUrl('')
+    } catch (exception) {
+      console.log(exception)
+      dispatch(
+        setNotificationWithTimeout(exception.response.data.error, 'error', 5),
+      )
+    }
   }
 
   return (
@@ -60,7 +80,6 @@ const BlogForm = ({ toggleVisibility, createBlog }) => {
 
 BlogForm.propTypes = {
   toggleVisibility: PropTypes.func.isRequired,
-  createBlog: PropTypes.func.isRequired,
 }
 
 export default BlogForm

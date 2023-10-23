@@ -54,7 +54,7 @@ const App = () => {
             <tbody>
               {blogs.map((blog) => (
                 <tr key={blog.id}>
-                  <Blog blog={blog} blogs={blogs} user={user} />
+                  <Blog blog={blog} user={user} />
                 </tr>
               ))}
             </tbody>

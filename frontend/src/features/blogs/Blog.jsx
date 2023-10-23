@@ -1,31 +1,34 @@
 import { useState } from 'react'
 import LikeButton from '../../components/LikeButton'
-import blogService from '../../services/blogs'
 import PropTypes from 'prop-types'
 import { useDispatch } from 'react-redux'
 import { setNotificationWithTimeout } from '../notification/notificationSlice'
+import { deleteBlog, likeBlog } from './blogSlice'
 
-const Blog = ({ blog, blogs, setBlogs, user }) => {
+const Blog = ({ blog, user }) => {
   const [showDetails, setShowDetails] = useState(false)
   const dispatch = useDispatch()
 
   const handleLike = async () => {
-    const likedBlog = await blogService.like(blog)
-    const updatedBlogs = blogs
-      .map((blog) => {
-        return blog.id === likedBlog.id ? likedBlog : blog
-      })
-      .sort((a, b) => b.likes - a.likes)
-    setBlogs(updatedBlogs)
+    try {
+      await dispatch(likeBlog(blog))
+      dispatch(
+        setNotificationWithTimeout(
+          `Successfully liked the blog "${blog.title}"`,
+          'success',
+          5,
+        ),
+      )
+    } catch (exception) {
+      setNotificationWithTimeout('Something went wrong', 'error', 5)
+    }
   }
 
   const handleDelete = async (event) => {
     event.preventDefault()
     if (window.confirm(`Delete "${blog.title}" by ${blog.author}?`)) {
       try {
-        await blogService.deleteBlog(blog)
-        const updatedBlogs = blogs.filter((b) => b.id !== blog.id)
-        setBlogs(updatedBlogs)
+        await dispatch(deleteBlog(blog))
         dispatch(
           setNotificationWithTimeout(
             `Blog "${blog.title}" by ${blog.author} successfully deleted`,
@@ -94,8 +97,6 @@ const Blog = ({ blog, blogs, setBlogs, user }) => {
 
 Blog.propTypes = {
   blog: PropTypes.object.isRequired,
-  blogs: PropTypes.array.isRequired,
-  setBlogs: PropTypes.func.isRequired,
   user: PropTypes.object.isRequired,
 }
 

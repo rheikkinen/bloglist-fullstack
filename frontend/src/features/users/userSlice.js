@@ -1,6 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit'
-import loginService from '../../services/login'
-import blogService from '../../services/blogs'
+import loginService from './loginService'
+import blogService from '../blogs/blogService'
 
 const userSlice = createSlice({
   name: 'user',

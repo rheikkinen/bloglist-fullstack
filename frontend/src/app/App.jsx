@@ -1,13 +1,13 @@
 import { useEffect, useRef } from 'react'
-import Blog from './features/blogs/Blog'
-import LoginForm from './features/users/LoginForm'
-import LogoutButton from './features/users/LogoutButton'
-import BlogForm from './features/blogs/BlogForm'
-import Notification from './features/notification/Notification'
-import blogService from './services/blogs'
-import ToggleVisibility from './components/ToggleVisibility'
+import Blog from '../features/blogs/Blog'
+import LoginForm from '../features/users/LoginForm'
+import LogoutButton from '../features/users/LogoutButton'
+import BlogForm from '../features/blogs/BlogForm'
+import Notification from '../features/notification/Notification'
+import blogService from '../features/blogs/blogService'
+import ToggleVisibility from '../components/ToggleVisibility'
 import { useDispatch, useSelector } from 'react-redux'
-import { initializeBlogs } from './features/blogs/blogSlice'
+import { initializeBlogs } from '../features/blogs/blogSlice'
 
 const App = () => {
   const blogFormRef = useRef()

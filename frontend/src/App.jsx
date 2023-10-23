@@ -1,7 +1,7 @@
-import { useState, useEffect, useRef } from 'react'
+import { useEffect, useRef } from 'react'
 import Blog from './features/blogs/Blog'
-import LoginForm from './components/LoginForm'
-import LogoutButton from './components/LogoutButton'
+import LoginForm from './features/users/LoginForm'
+import LogoutButton from './features/users/LogoutButton'
 import BlogForm from './features/blogs/BlogForm'
 import Notification from './features/notification/Notification'
 import blogService from './services/blogs'
@@ -10,36 +10,26 @@ import { useDispatch, useSelector } from 'react-redux'
 import { initializeBlogs } from './features/blogs/blogSlice'
 
 const App = () => {
-  const [user, setUser] = useState(
-    JSON.parse(window.localStorage.getItem('loggedUserDetails')),
-  )
-  const [loggedIn, setLoggedIn] = useState(false)
   const blogFormRef = useRef()
 
-  const blogs = useSelector((state) => state.blogs)
   const dispatch = useDispatch()
+
+  const blogs = useSelector((state) => state.blogs)
+  const user = useSelector((state) => state.user)
 
   useEffect(() => {
     dispatch(initializeBlogs())
     if (user) blogService.setToken(user.token)
   }, []) // eslint-disable-line
 
-  useEffect(() => {
-    const loggedUser = window.localStorage.getItem('loggedUserDetails')
-    if (loggedUser) {
-      const user = JSON.parse(loggedUser)
-      setUser(user)
-    }
-  }, [loggedIn])
-
   return (
     <div>
       <Notification />
       {user === null ? (
-        <LoginForm setUser={setUser} setLoggedIn={setLoggedIn} />
+        <LoginForm />
       ) : (
         <div>
-          <LogoutButton setUser={setUser} setLoggedIn={setLoggedIn} />
+          <LogoutButton />
           <p>Logged in as {user.username}</p>
           <ToggleVisibility buttonLabel="Add a new blog" ref={blogFormRef}>
             <BlogForm
@@ -54,7 +44,7 @@ const App = () => {
             <tbody>
               {blogs.map((blog) => (
                 <tr key={blog.id}>
-                  <Blog blog={blog} user={user} />
+                  <Blog blog={blog} />
                 </tr>
               ))}
             </tbody>

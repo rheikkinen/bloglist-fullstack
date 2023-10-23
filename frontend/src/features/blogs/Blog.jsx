@@ -1,13 +1,15 @@
 import { useState } from 'react'
 import LikeButton from '../../components/LikeButton'
 import PropTypes from 'prop-types'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { setNotificationWithTimeout } from '../notification/notificationSlice'
 import { deleteBlog, likeBlog } from './blogSlice'
 
-const Blog = ({ blog, user }) => {
+const Blog = ({ blog }) => {
   const [showDetails, setShowDetails] = useState(false)
   const dispatch = useDispatch()
+
+  const user = useSelector((state) => state.user)
 
   const handleLike = async () => {
     try {
@@ -97,7 +99,6 @@ const Blog = ({ blog, user }) => {
 
 Blog.propTypes = {
   blog: PropTypes.object.isRequired,
-  user: PropTypes.object.isRequired,
 }
 
 export default Blog

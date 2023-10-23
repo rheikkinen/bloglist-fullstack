@@ -1,12 +1,12 @@
 import { useDispatch } from 'react-redux'
-import { setNotificationWithTimeout } from '../features/notification/notificationSlice'
+import { setNotificationWithTimeout } from '../notification/notificationSlice'
+import { setUser } from './userSlice'
 
-const LogoutButton = ({ setUser, setLoggedIn, showNotification }) => {
+const LogoutButton = () => {
   const dispatch = useDispatch()
   const handleLogout = () => {
     window.localStorage.removeItem('loggedUserDetails')
-    setUser(null)
-    setLoggedIn(false)
+    dispatch(setUser(null))
     dispatch(
       setNotificationWithTimeout('Successfully logged out', 'success', 5),
     )

@@ -1,11 +1,10 @@
 import { useState } from 'react'
-import loginService from '../services/login'
-import blogService from '../services/blogs'
 import PropTypes from 'prop-types'
-import { setNotificationWithTimeout } from '../features/notification/notificationSlice'
+import { setNotificationWithTimeout } from '../notification/notificationSlice'
 import { useDispatch } from 'react-redux'
+import { userLogin } from './userSlice'
 
-const LoginForm = ({ setUser, setLoggedIn, showNotification }) => {
+const LoginForm = () => {
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
 
@@ -15,19 +14,11 @@ const LoginForm = ({ setUser, setLoggedIn, showNotification }) => {
     event.preventDefault()
 
     try {
-      const user = await loginService.login({ username, password })
-      window.localStorage.setItem('loggedUserDetails', JSON.stringify(user))
-      blogService.setToken(user.token)
-      setUser(user)
-      setLoggedIn(true)
+      await dispatch(userLogin({ username, password }))
       setUsername('')
       setPassword('')
       dispatch(
-        setNotificationWithTimeout(
-          `Logged in as ${user.username}`,
-          'success',
-          5,
-        ),
+        setNotificationWithTimeout(`Logged in as ${username}`, 'success', 5),
       )
     } catch (exception) {
       dispatch(
@@ -66,11 +57,6 @@ const LoginForm = ({ setUser, setLoggedIn, showNotification }) => {
       </form>
     </div>
   )
-}
-
-LoginForm.propTypes = {
-  setUser: PropTypes.func.isRequired,
-  setLoggedIn: PropTypes.func.isRequired,
 }
 
 export default LoginForm

@@ -1,6 +1,6 @@
 import { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { Route, Routes } from 'react-router-dom'
+import { Link, Route, Routes } from 'react-router-dom'
 import { initializeBlogs } from '../features/blogs/blogSlice'
 import { initializeUsers } from '../features/users/userSlice'
 import UserList from '../features/users/UserList'
@@ -27,8 +27,15 @@ const App = () => {
         <LoginForm />
       ) : (
         <div>
-          <LogoutButton />
-          <p>Logged in as {user.username}</p>
+          <nav>
+            <Link style={{ marginRight: 10 }} to="/">
+              Home
+            </Link>
+            <Link to="/users">Users</Link>
+          </nav>
+          <p>
+            Logged in as {user.username} <LogoutButton />
+          </p>
           <Routes>
             <Route path="/" element={<HomePage />} />
             <Route path="/users" element={<UserList />} />

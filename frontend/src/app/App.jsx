@@ -1,25 +1,21 @@
-import { useEffect, useRef } from 'react'
-import Blog from '../features/blogs/Blog'
+import { useEffect } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
+import { Route, Routes } from 'react-router-dom'
+import { initializeBlogs } from '../features/blogs/blogSlice'
+import { initializeUsers } from '../features/users/userSlice'
+import UserList from '../features/users/UserList'
+import HomePage from '../components/HomePage'
 import LoginForm from '../features/users/LoginForm'
 import LogoutButton from '../features/users/LogoutButton'
-import BlogForm from '../features/blogs/BlogForm'
 import Notification from '../features/notification/Notification'
-import blogService from '../features/blogs/blogService'
-import ToggleVisibility from '../components/ToggleVisibility'
-import { useDispatch, useSelector } from 'react-redux'
-import { initializeBlogs } from '../features/blogs/blogSlice'
 
 const App = () => {
-  const blogFormRef = useRef()
-
   const dispatch = useDispatch()
-
-  const blogs = useSelector((state) => state.blogs)
-  const user = useSelector((state) => state.user)
+  const user = useSelector((state) => state.users.loggedInUser)
 
   useEffect(() => {
     dispatch(initializeBlogs())
-    if (user) blogService.setToken(user.token)
+    dispatch(initializeUsers())
   }, []) // eslint-disable-line
 
   return (
@@ -31,24 +27,10 @@ const App = () => {
         <div>
           <LogoutButton />
           <p>Logged in as {user.username}</p>
-          <ToggleVisibility buttonLabel="Add a new blog" ref={blogFormRef}>
-            <BlogForm
-              toggleVisibility={() => blogFormRef.current.toggleVisibility()}
-            />
-          </ToggleVisibility>
-
-          <table>
-            <caption style={{ fontSize: '1.5em', fontWeight: 'bolder' }}>
-              Blogs
-            </caption>
-            <tbody>
-              {blogs.map((blog) => (
-                <tr key={blog.id}>
-                  <Blog blog={blog} />
-                </tr>
-              ))}
-            </tbody>
-          </table>
+          <Routes>
+            <Route path="/" element={<HomePage />} />
+            <Route path="/users" element={<UserList />} />
+          </Routes>
         </div>
       )}
     </div>

@@ -1,15 +1,18 @@
 import { useDispatch } from 'react-redux'
 import { setNotificationWithTimeout } from '../notification/notificationSlice'
-import { setUser } from './userSlice'
+import { logout } from './userSlice'
+import { useNavigate } from 'react-router-dom'
 
 const LogoutButton = () => {
   const dispatch = useDispatch()
+  const navigateTo = useNavigate()
   const handleLogout = () => {
-    window.localStorage.removeItem('loggedUserDetails')
-    dispatch(setUser(null))
+    localStorage.removeItem('loggedUserDetails')
+    dispatch(logout())
     dispatch(
       setNotificationWithTimeout('Successfully logged out', 'success', 5),
     )
+    navigateTo('/')
   }
 
   return (

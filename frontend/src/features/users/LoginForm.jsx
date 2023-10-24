@@ -1,5 +1,4 @@
 import { useState } from 'react'
-import PropTypes from 'prop-types'
 import { setNotificationWithTimeout } from '../notification/notificationSlice'
 import { useDispatch } from 'react-redux'
 import { userLogin } from './userSlice'

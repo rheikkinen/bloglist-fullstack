@@ -1,15 +1,19 @@
 import { useState } from 'react'
 import LikeButton from '../../components/LikeButton'
-import PropTypes from 'prop-types'
 import { useDispatch, useSelector } from 'react-redux'
 import { setNotificationWithTimeout } from '../notification/notificationSlice'
 import { deleteBlog, likeBlog } from './blogSlice'
+import { useNavigate, useParams } from 'react-router-dom'
 
-const Blog = ({ blog }) => {
-  const [showDetails, setShowDetails] = useState(false)
+const Blog = () => {
   const dispatch = useDispatch()
+  const navigateTo = useNavigate()
 
-  const user = useSelector((state) => state.user)
+  const { id } = useParams()
+  const blog = useSelector((state) =>
+    state.blogs.find((blog) => blog.id === id),
+  )
+  const user = useSelector((state) => state.users.loggedInUser)
 
   const handleLike = async () => {
     try {
@@ -38,6 +42,7 @@ const Blog = ({ blog }) => {
             5,
           ),
         )
+        navigateTo('/')
       } catch (exception) {
         dispatch(
           setNotificationWithTimeout(exception.response.data.error, 'error', 5),
@@ -46,59 +51,38 @@ const Blog = ({ blog }) => {
     }
   }
 
+  if (!blog) return <div>Loading blog data...</div>
+
   return (
     <>
-      <td>
-        <ul style={{ listStyle: 'none', paddingLeft: '10px' }}>
-          <li>
-            {blog.title} <em>{blog.author && 'by ' + blog.author}</em>
-          </li>
-          {showDetails && (
-            <>
-              <li>
-                <a
-                  href={blog.url.includes('//') ? blog.url : `//${blog.url}`}
-                  target="_blank"
-                  rel="noreferrer"
-                >
-                  {blog.url}
-                </a>
-              </li>
-              <li>{blog.likes} likes</li>
-              {blog.user && (
-                <li>Added by {blog.user.name || blog.user.username}</li>
-              )}
-              {user && blog.user && user.username === blog.user.username && (
-                <li>
-                  <button
-                    style={{ backgroundColor: 'lightpink' }}
-                    onClick={handleDelete}
-                  >
-                    Delete blog
-                  </button>
-                </li>
-              )}
-            </>
-          )}
-        </ul>
-      </td>
-      <td>
-        <LikeButton blog={blog} handleLike={handleLike} />
-      </td>
-      <td>
-        <button
-          data-testid="showDetailsButton"
-          onClick={() => setShowDetails(!showDetails)}
-        >
-          {showDetails ? 'Hide details' : 'Show details'}
-        </button>
-      </td>
+      <h2>
+        {blog.title} (<em>{blog.author && 'by ' + blog.author}</em>){' '}
+        {user && blog.user && user.username === blog.user.username && (
+          <button
+            style={{ backgroundColor: 'lightpink' }}
+            onClick={handleDelete}
+          >
+            Delete blog
+          </button>
+        )}
+      </h2>
+      <ul style={{ listStyle: 'none', paddingLeft: '10px' }}>
+        <li>
+          <a
+            href={blog.url.includes('//') ? blog.url : `//${blog.url}`}
+            target="_blank"
+            rel="noreferrer"
+          >
+            {blog.url}
+          </a>
+        </li>
+        <li>
+          {blog.likes} likes <LikeButton handleLike={handleLike} />
+        </li>
+        {blog.user && <li>Added by {blog.user.name || blog.user.username}</li>}
+      </ul>
     </>
   )
-}
-
-Blog.propTypes = {
-  blog: PropTypes.object.isRequired,
 }
 
 export default Blog

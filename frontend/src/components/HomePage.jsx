@@ -1,8 +1,8 @@
 import { useSelector } from 'react-redux'
-import Blog from '../features/blogs/Blog'
 import BlogForm from '../features/blogs/BlogForm'
 import ToggleVisibility from './ToggleVisibility'
 import { useRef } from 'react'
+import { Link } from 'react-router-dom'
 
 const HomePage = () => {
   const blogFormRef = useRef()
@@ -23,7 +23,9 @@ const HomePage = () => {
         <tbody>
           {blogs.map((blog) => (
             <tr key={blog.id}>
-              <Blog blog={blog} />
+              <td>
+                <Link to={`/blogs/${blog.id}`}>{blog.title}</Link>
+              </td>
             </tr>
           ))}
         </tbody>

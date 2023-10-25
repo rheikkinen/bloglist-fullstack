@@ -1,8 +1,7 @@
-import { useState } from 'react'
 import LikeButton from '../../components/LikeButton'
 import { useDispatch, useSelector } from 'react-redux'
 import { setNotificationWithTimeout } from '../notification/notificationSlice'
-import { deleteBlog, likeBlog } from './blogSlice'
+import { commentBlog, deleteBlog, likeBlog } from './blogSlice'
 import { useNavigate, useParams } from 'react-router-dom'
 
 const Blog = () => {
@@ -51,6 +50,22 @@ const Blog = () => {
     }
   }
 
+  const handleComment = async (event) => {
+    event.preventDefault()
+    try {
+      const comment = event.target.comment.value
+      await dispatch(commentBlog(blog, comment))
+      event.target.comment.value = ''
+      dispatch(
+        setNotificationWithTimeout('Comment successfully added!', 'success', 5),
+      )
+    } catch (exception) {
+      dispatch(
+        setNotificationWithTimeout(exception.response.data.error, 'error', 5),
+      )
+    }
+  }
+
   if (!blog) return <div>Loading blog data...</div>
 
   return (
@@ -82,6 +97,11 @@ const Blog = () => {
         {blog.user && <li>Added by {blog.user.name || blog.user.username}</li>}
       </ul>
       <h3>Comments</h3>
+      <h4>Add a comment</h4>
+      <form onSubmit={handleComment}>
+        <input type="textarea" name="comment" />
+        <button type="submit">Send</button>
+      </form>
       {blog.comments.length > 0 ? (
         <table>
           <tbody>
@@ -93,7 +113,7 @@ const Blog = () => {
           </tbody>
         </table>
       ) : (
-        <div>No one has commented on this blog yet.</div>
+        <p>No one has commented on this blog yet.</p>
       )}
     </>
   )

@@ -50,6 +50,13 @@ export const likeBlog = (blog) => {
   }
 }
 
+export const commentBlog = (blog, comment) => {
+  return async (dispatch) => {
+    const updatedBlog = await blogService.comment(blog, comment)
+    dispatch(updateBlog(updatedBlog))
+  }
+}
+
 export const { setBlogs, appendBlog, updateBlog, removeBlog } =
   blogSlice.actions
 export default blogSlice.reducer

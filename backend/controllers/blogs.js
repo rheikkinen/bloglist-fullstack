@@ -72,4 +72,12 @@ blogsRouter.put('/:id/like', async (request, response) => {
   response.status(200).json(updatedBlog)
 })
 
+blogsRouter.post('/:id/comment', async (request, response) => {
+  const blog = await Blog.findById(request.params.id)
+  const { comment } = request.body
+  blog.comments.push(comment)
+  await blog.save()
+  response.status(200).json(blog)
+})
+
 module.exports = blogsRouter

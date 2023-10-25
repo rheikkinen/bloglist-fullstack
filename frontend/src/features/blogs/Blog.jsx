@@ -81,6 +81,20 @@ const Blog = () => {
         </li>
         {blog.user && <li>Added by {blog.user.name || blog.user.username}</li>}
       </ul>
+      <h3>Comments</h3>
+      {blog.comments.length > 0 ? (
+        <table>
+          <tbody>
+            {blog.comments.map((comment) => (
+              <tr key={comment}>
+                <td>{comment}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      ) : (
+        <div>No one has commented on this blog yet.</div>
+      )}
     </>
   )
 }

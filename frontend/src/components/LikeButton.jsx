@@ -1,14 +1,16 @@
+import { Button } from '@chakra-ui/react'
 import PropTypes from 'prop-types'
 
 const LikeButton = ({ handleLike }) => {
   return (
-    <button
+    <Button
+      size="xs"
+      colorScheme="green"
       data-testid="like-button"
-      style={{ backgroundColor: 'lightgreen' }}
       onClick={handleLike}
     >
       Like
-    </button>
+    </Button>
   )
 }
 

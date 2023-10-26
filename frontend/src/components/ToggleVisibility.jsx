@@ -1,3 +1,4 @@
+import { Box, Button } from '@chakra-ui/react'
 import React, { forwardRef, useImperativeHandle, useState } from 'react'
 
 const ToggleVisibility = forwardRef((props, ref) => {
@@ -12,12 +13,18 @@ const ToggleVisibility = forwardRef((props, ref) => {
   })
 
   return (
-    <div>
+    <Box mt={4}>
       {visible && props.children}
-      <button style={{ marginTop: '2px' }} onClick={toggleVisibility}>
+      <Button
+        colorScheme={visible ? 'gray' : 'purple'}
+        size="sm"
+        width="full"
+        mt={2}
+        onClick={toggleVisibility}
+      >
         {visible ? 'Cancel' : props.buttonLabel}
-      </button>
-    </div>
+      </Button>
+    </Box>
   )
 })
 

@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { setNotificationWithTimeout } from '../notification/notificationSlice'
 import { useDispatch } from 'react-redux'
 import { userLogin } from './userSlice'
+import { Box, Button, Heading, Input } from '@chakra-ui/react'
 
 const LoginForm = () => {
   const [username, setUsername] = useState('')
@@ -28,11 +29,13 @@ const LoginForm = () => {
 
   return (
     <div>
-      <h2>Log in to the Blog List App</h2>
+      <Box textAlign="center" p={5}>
+        <Heading>Log in to the Blog List App</Heading>
+      </Box>
       <form onSubmit={handleLogin}>
         <div>
-          <input
-            style={{ marginBottom: '2px' }}
+          <Input
+            variant="outline"
             type="text"
             value={username}
             placeholder="Username"
@@ -41,8 +44,9 @@ const LoginForm = () => {
           />
         </div>
         <div>
-          <input
-            style={{ marginBottom: '2px' }}
+          <Input
+            mt={2}
+            variant="outline"
             type="password"
             value={password}
             placeholder="Password"
@@ -50,9 +54,15 @@ const LoginForm = () => {
             onChange={({ target }) => setPassword(target.value)}
           />
         </div>
-        <button style={{ marginTop: '5px' }} type="submit">
+        <Button
+          colorScheme="purple"
+          variant="solid"
+          width="full"
+          mt={4}
+          type="submit"
+        >
           Log in
-        </button>
+        </Button>
       </form>
     </div>
   )

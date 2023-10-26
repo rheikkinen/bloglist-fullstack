@@ -3,6 +3,8 @@ import PropTypes from 'prop-types'
 import { createBlog } from './blogSlice'
 import { useDispatch } from 'react-redux'
 import { setNotificationWithTimeout } from '../notification/notificationSlice'
+import { Box, Button, Heading, Input } from '@chakra-ui/react'
+import { logout } from '../users/userSlice'
 
 const BlogForm = ({ toggleVisibility }) => {
   const [title, setTitle] = useState('')
@@ -29,7 +31,9 @@ const BlogForm = ({ toggleVisibility }) => {
       setAuthor('')
       setUrl('')
     } catch (exception) {
-      console.log(exception)
+      if (exception.response.data.error === 'Token expired') {
+        dispatch(logout())
+      }
       dispatch(
         setNotificationWithTimeout(exception.response.data.error, 'error', 5),
       )
@@ -38,11 +42,12 @@ const BlogForm = ({ toggleVisibility }) => {
 
   return (
     <div>
-      <h2>Add a new blog</h2>
+      <Box p={2}>
+        <Heading as="h3">Add a new blog</Heading>
+      </Box>
       <form onSubmit={handleSubmit}>
         <div>
-          <input
-            style={{ marginBottom: '2px' }}
+          <Input
             type="text"
             value={title}
             placeholder="Title"
@@ -51,8 +56,8 @@ const BlogForm = ({ toggleVisibility }) => {
           />
         </div>
         <div>
-          <input
-            style={{ marginBottom: '2px' }}
+          <Input
+            mt={2}
             type="text"
             value={author}
             placeholder="Author"
@@ -61,8 +66,8 @@ const BlogForm = ({ toggleVisibility }) => {
           />
         </div>
         <div>
-          <input
-            style={{ marginBottom: '2px' }}
+          <Input
+            mt={2}
             type="text"
             value={url}
             placeholder="Url"
@@ -70,9 +75,15 @@ const BlogForm = ({ toggleVisibility }) => {
             onChange={({ target }) => setUrl(target.value)}
           />
         </div>
-        <button style={{ marginTop: '5px' }} type="submit">
+        <Button
+          colorScheme="purple"
+          size="sm"
+          mt={4}
+          width="full"
+          type="submit"
+        >
           Submit
-        </button>
+        </Button>
       </form>
     </div>
   )

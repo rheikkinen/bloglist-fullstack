@@ -3,6 +3,21 @@ import { useDispatch, useSelector } from 'react-redux'
 import { setNotificationWithTimeout } from '../notification/notificationSlice'
 import { commentBlog, deleteBlog, likeBlog } from './blogSlice'
 import { useNavigate, useParams } from 'react-router-dom'
+import {
+  Box,
+  Button,
+  Card,
+  CardBody,
+  Center,
+  FormControl,
+  Heading,
+  Input,
+  Link,
+  Stack,
+  Text,
+} from '@chakra-ui/react'
+import { ChevronRightIcon, ExternalLinkIcon } from '@chakra-ui/icons'
+import { logout } from '../users/userSlice'
 
 const Blog = () => {
   const dispatch = useDispatch()
@@ -43,6 +58,9 @@ const Blog = () => {
         )
         navigateTo('/')
       } catch (exception) {
+        if (exception.response.data.error === 'Token expired') {
+          dispatch(logout())
+        }
         dispatch(
           setNotificationWithTimeout(exception.response.data.error, 'error', 5),
         )
@@ -60,6 +78,9 @@ const Blog = () => {
         setNotificationWithTimeout('Comment successfully added!', 'success', 5),
       )
     } catch (exception) {
+      if (exception.response.data.error === 'Token expired') {
+        dispatch(logout())
+      }
       dispatch(
         setNotificationWithTimeout(exception.response.data.error, 'error', 5),
       )
@@ -70,50 +91,82 @@ const Blog = () => {
 
   return (
     <>
-      <h2>
-        {blog.title} (<em>{blog.author && 'by ' + blog.author}</em>){' '}
+      <Stack direction="row">
+        <Box>
+          <Heading p={2} as="h2">
+            {blog.title}
+          </Heading>
+        </Box>
         {user && blog.user && user.username === blog.user.username && (
-          <button
-            style={{ backgroundColor: 'lightpink' }}
-            onClick={handleDelete}
-          >
-            Delete blog
-          </button>
+          <Center>
+            <Box>
+              <Button size="xs" colorScheme="red" onClick={handleDelete}>
+                Delete blog
+              </Button>
+            </Box>
+          </Center>
         )}
-      </h2>
-      <ul style={{ listStyle: 'none', paddingLeft: '10px' }}>
-        <li>
-          <a
-            href={blog.url.includes('//') ? blog.url : `//${blog.url}`}
-            target="_blank"
-            rel="noreferrer"
-          >
-            {blog.url}
-          </a>
-        </li>
-        <li>
-          {blog.likes} likes <LikeButton handleLike={handleLike} />
-        </li>
-        {blog.user && <li>Added by {blog.user.name || blog.user.username}</li>}
-      </ul>
-      <h3>Comments</h3>
-      <h4>Add a comment</h4>
+      </Stack>
+      <Stack>
+        <Card size="sm">
+          <CardBody>
+            <Link
+              isExternal
+              href={blog.url.includes('//') ? blog.url : `//${blog.url}`}
+            >
+              {blog.url} <ExternalLinkIcon />
+            </Link>
+          </CardBody>
+        </Card>
+        <Card size="sm">
+          <CardBody>
+            {blog.likes} likes <LikeButton handleLike={handleLike} />
+          </CardBody>
+        </Card>
+        {blog.user && (
+          <Card size="sm">
+            <CardBody>Added by {blog.user.name || blog.user.username}</CardBody>
+          </Card>
+        )}
+      </Stack>
+
+      <Box p={2}>
+        <Heading as="h3">Comments</Heading>
+      </Box>
       <form onSubmit={handleComment}>
-        <input type="textarea" name="comment" />
-        <button type="submit">Send</button>
+        <FormControl>
+          <Input
+            placeholder="Add a comment"
+            variant="outline"
+            type="textarea"
+            name="comment"
+          />
+        </FormControl>
+
+        <Button
+          width="full"
+          size="sm"
+          mt={2}
+          colorScheme="purple"
+          type="submit"
+        >
+          Send
+        </Button>
       </form>
       {blog.comments.length > 0 ? (
-        <table>
-          <tbody>
-            {blog.comments.map((comment) => (
-              <tr key={comment}>
-                <td>{comment}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+        blog.comments.map((comment) => (
+          <Card size="sm" key={comment}>
+            <CardBody>
+              <Text>
+                <ChevronRightIcon /> {comment}
+              </Text>
+            </CardBody>
+          </Card>
+        ))
       ) : (
-        <p>No one has commented on this blog yet.</p>
+        <Text textAlign="center" p={4}>
+          No one has commented on this blog yet.
+        </Text>
       )}
     </>
   )
